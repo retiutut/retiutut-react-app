@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './WeatherApp.css';
+import Inputs from './InputTest';
+import SecretButton from './SecretButton';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  input: {
+    margin: theme.spacing.unit,
+  },
+});
 
 class WeatherApp extends Component {
   constructor(props) {
@@ -36,18 +49,37 @@ class WeatherApp extends Component {
     return (
       <div className="WeatherApp">
         <header className="WeatherApp-header">
-          <img src={logo} className="React-logo" alt="logo" />
-          <p>
-            Enter City Name to Get Current Weather:
-          </p>
-          <p>
-            <input
-                type="text"
-                value={this.state.value}
-                onChange={this.handleChange}
-            />
-          </p>
-        </header>
+          <img 
+              id="layer1" 
+              src="https://img.icons8.com/ultraviolet/480/000000/sun.png"
+              className="Sun-logo"
+              alt="blueSunLogo"
+          />
+          <img 
+              id="layer2" 
+              src={logo} 
+              className="React-logo" 
+              alt="reactlogo" 
+          />
+          </header>
+          <body className="WeatherApp-body">
+            <p>
+              <Typography variant="h4">
+              Enter Location to Get Current Weather
+              </Typography>
+            </p>
+            <p>
+              <Inputs 
+                  type="text"
+                  //defaultValue="New Orleans"
+                  value={this.state.value}
+                  onChange={this.handleChange}
+              />
+            </p>
+            <p>
+              <SecretButton />
+            </p>
+          </body>
       </div>
     );
   }

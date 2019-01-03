@@ -1,17 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import * as serviceWorker from './serviceWorker';
-import WeatherApp from './WeatherAppTest';
-import Index from './pages/index';
+import WeatherApp from './pages/WeatherApp';
 
 //const testElement = React.createElement('h1', { className: 'greeting' }, 'Input Zip Code for Weather');
 //ReactDOM.render(testElement, document.getElementById('root'));
 
-ReactDOM.render(<Index />, document.getElementById('root'));
-//ReactDOM.render(<WeatherApp />, document.getElementById('root'));
-
+ReactDOM.render(<WeatherApp />, document.getElementById('root'));
 
 
 // If you want your app to work offline and load faster, you can change

@@ -13,11 +13,10 @@ import withRoot from '../withRoot';
 const styles = theme => ({
   root: {
     textAlign: 'center',
-    paddingTop: theme.spacing.unit * 20,
   },
 });
 
-class Index extends React.Component {
+class SecretButton extends React.Component {
   state = {
     open: false,
   };
@@ -41,9 +40,9 @@ class Index extends React.Component {
     return (
       <div className={classes.root}>
         <Dialog open={open} onClose={this.handleClose}>
-          <DialogTitle>Super Secret Password</DialogTitle>
+          <DialogTitle>Super Secret Weather</DialogTitle>
           <DialogContent>
-            <DialogContentText>1-2-3-4-5</DialogContentText>
+            <DialogContentText>current weather</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button color="primary" onClick={this.handleClose}>
@@ -51,22 +50,22 @@ class Index extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <Typography variant="h4" gutterBottom>
-          Material-UI
+        <Typography variant="h5" gutterBottom>
+          Getting Weather for (cityName)
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          example project
+          Click to see the Weather!
         </Typography>
         <Button variant="contained" color="secondary" onClick={this.handleClick}>
-          Super Secret Password
+          Super Secret Information
         </Button>
       </div>
     );
   }
 }
 
-Index.propTypes = {
+SecretButton.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withRoot(withStyles(styles)(Index));
+export default withRoot(withStyles(styles)(SecretButton));
