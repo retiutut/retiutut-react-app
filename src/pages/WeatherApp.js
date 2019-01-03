@@ -1,26 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './WeatherApp.css';
-import Inputs from './InputTest';
+//import Inputs from './InputTest';
+import Input from '@material-ui/core/Input';
 import SecretButton from './SecretButton';
 import Typography from '@material-ui/core/Typography';
 
-const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  input: {
-    margin: theme.spacing.unit,
-  },
-});
-
-class WeatherApp extends Component {
+class WeatherApp extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      newUserLocation: {
         cityName: ''
         /*
         email: '',
@@ -29,20 +19,52 @@ class WeatherApp extends Component {
         expertise: '',
         about: ''
         */
-      },
-
-    }
+    };
+    this.handleChange = this.handleChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
+    console.log("App Init");
   }
 
   /* This life cycle hook gets executed when the component mounts */
 
-  handleFormSubmit() {
+  handleFormSubmit(e) {
     // Form submission logic
+    e.preventDefault();
+    let userData = this.state.cityName;
+    fetchWeather(userData);
+    console.log("Tried to submit form...");
+    /*
+    fetch('http://example.com',{
+        method: "POST",
+        body: JSON.stringify(userData),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      }).then(response => {
+        response.json().then(data =>{
+          console.log("Successful" + data);
+        })
+    });
+    */
   }
-  handleClearForm() {
+
+  handleChange(e) {
+    this.setState({
+        cityName: e.target.value
+    });
+    console.log("Change has happened");
+  }
+
+  handleClearForm(e) {
     // Logic for resetting the form
+    e.preventDefault();
+    this.setState({ 
+      newUserLocation: {
+        cityName: ''
+      },
+    });
   }
 
   render() {
@@ -69,21 +91,65 @@ class WeatherApp extends Component {
               </Typography>
             </p>
             <p>
-              <Inputs 
+              <Input 
                   type="text"
                   //defaultValue="New Orleans"
-                  value={this.state.value}
+                  value={this.state.cityName}
                   onChange={this.handleChange}
               />
             </p>
             <p>
-              <SecretButton />
+              <Typography variant="h5" gutterBottom>
+                Getting Weather for {this.state.cityName}
+              </Typography>
+              <SecretButton
+                  type="button"
+                  onChange={this.handleFormSubmit}
+              />
             </p>
           </body>
       </div>
     );
   }
 }
+
+function fetchWeather(cityName) {
+
+  //////////////////////////////
+  //      Set Functions       //
+  //////////////////////////////
+
+  var weather = require('openweather-apis');
+  weather.setLang('en');
+  weather.setCity(cityName);
+
+  //////////////////////////////
+  //      Get Functions       //
+  //////////////////////////////
+
+  // get the Temperature  
+  weather.getTemperature(function(err, temp){
+    console.log(temp);
+  });
+
+  // get the Atm Pressure
+  weather.getPressure(function(err, pres){
+    console.log(pres);
+  });
+
+  // get the Humidity
+  weather.getHumidity(function(err, hum){
+    console.log(hum);
+  });
+
+  // get the Description of the weather condition
+  weather.getDescription(function(err, desc){
+    console.log(desc);
+  });
+}
+
+export default WeatherApp;
+
 
 /*
 var weather = require('openweather-apis');
@@ -135,5 +201,3 @@ weather.getDescription(function(err, desc){
     console.log(desc);
 });
 */
-
-export default WeatherApp;

@@ -50,9 +50,6 @@ class SecretButton extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
-        <Typography variant="h5" gutterBottom>
-          Getting Weather for (cityName)
-        </Typography>
         <Typography variant="subtitle1" gutterBottom>
           Click to see the Weather!
         </Typography>
