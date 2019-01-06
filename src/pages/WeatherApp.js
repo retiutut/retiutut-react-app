@@ -4,21 +4,30 @@ import logo from './logo.svg';
 import './WeatherApp.css';
 //import Inputs from './InputTest';
 import Input from '@material-ui/core/Input';
-import SecretButton from './SecretButton';
+//import material-ui
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
+
+var currentTemperature = 0.0;
+var currentPressure = 0;
+var currentHumidity = 0;
+var currentDescription = '';
 
 class WeatherApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        cityName: ''
-        /*
-        email: '',
-        age: '',
-        gender: '',
-        expertise: '',
-        about: ''
-        */
+        cityName: '',
+        open: false,
+        currentTemp: 0.0,
+        currentPres: 0,
+        currentHum:0,
+        currentDesc: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -31,30 +40,65 @@ class WeatherApp extends React.Component {
   handleFormSubmit(e) {
     // Form submission logic
     e.preventDefault();
-    let userData = this.state.cityName;
-    fetchWeather(userData);
-    console.log("Tried to submit form...");
-    /*
-    fetch('http://example.com',{
-        method: "POST",
-        body: JSON.stringify(userData),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-      }).then(response => {
-        response.json().then(data =>{
-          console.log("Successful" + data);
-        })
+    let userCity = this.state.cityName;
+    //////////////////////////////
+    //      Set Functions       //
+    //////////////////////////////
+
+    var weather = require('openweather-apis');
+    weather.setLang('en');
+    weather.setCity(userCity);
+    weather.setUnits('imperial');
+    weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
+    var cTemp;
+    var cPres;
+    var cHum;
+    var cDesc = '';
+
+    //////////////////////////////
+    //      Get Functions       //
+    //////////////////////////////
+
+    // get the Temperature  
+    weather.getTemperature(function(err, temp){
+      console.log("temp: " + temp);
+      cTemp = temp;
+      currentTemperature = temp;
     });
-    */
+
+    // get the Atm Pressure
+    weather.getPressure(function(err, pres){
+      console.log("pres: " + pres);
+      cPres = pres;
+    });
+
+    // get the Humidity
+    weather.getHumidity(function(err, hum){
+      console.log("hum: " + hum);
+      cHum = hum;
+    });
+
+    // get the Description of the weather condition
+    weather.getDescription(function(err, desc){
+      console.log("desc: " + desc);
+      cDesc = desc;
+    });
+    console.log("Tried to submit form using: " + userCity);
+
+    this.setState({
+      currentTemp: cTemp,
+      currentPres: cPres,
+      currentHum: cHum,
+      currentDesc: cDesc,
+      open: true,
+    });
   }
 
   handleChange(e) {
     this.setState({
         cityName: e.target.value
     });
-    console.log("Change has happened");
+    //console.log("Change has happened");
   }
 
   handleClearForm(e) {
@@ -67,7 +111,15 @@ class WeatherApp extends React.Component {
     });
   }
 
+  handleClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
   render() {
+    var { open } = this.state;
+
     return (
       <div className="WeatherApp">
         <header className="WeatherApp-header">
@@ -83,70 +135,60 @@ class WeatherApp extends React.Component {
               className="React-logo" 
               alt="reactlogo" 
           />
-          </header>
-          <body className="WeatherApp-body">
-            <p>
-              <Typography variant="h4">
-              Enter Location to Get Current Weather
-              </Typography>
-            </p>
-            <p>
-              <Input 
-                  type="text"
-                  //defaultValue="New Orleans"
-                  value={this.state.cityName}
-                  onChange={this.handleChange}
-              />
-            </p>
-            <p>
-              <Typography variant="h5" gutterBottom>
-                Getting Weather for {this.state.cityName}
-              </Typography>
-              <SecretButton
-                  type="button"
-                  onChange={this.handleFormSubmit}
-              />
-            </p>
-          </body>
+        </header>
+        <body className="WeatherApp-body">
+          <p>
+            <Typography variant="h4">
+            Enter Location to Get Current Weather
+            </Typography>
+          </p>
+          <p>
+            <Input 
+                type="text"
+                //defaultValue="New Orleans"
+                value={this.state.cityName}
+                onChange={this.handleChange}
+            />
+          </p>
+          <p>
+          <Typography variant="h5" gutterBottom>
+            Getting Weather for {this.state.cityName}
+          </Typography>
+          <Typography variant="subtitle1" gutterBottom>
+            Click to see the Weather!
+          </Typography>
+          <Button variant="contained" color="secondary" onClick={this.handleFormSubmit}>
+            Super Secret Information
+          </Button>
+          </p>
+        </body>
+        <footer className="WeatherApp-footer">
+
+        <Dialog open={open} onClose={this.handleClose}>
+            <DialogTitle>Super Secret Weather</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {currentTemperature}
+                {currentPressure}
+                {currentHumidity}
+                {currentDescription}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button color="primary" onClick={this.handleClose}>
+                OK
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </footer>
       </div>
     );
   }
 }
 
-function fetchWeather(cityName) {
-
-  //////////////////////////////
-  //      Set Functions       //
-  //////////////////////////////
-
-  var weather = require('openweather-apis');
-  weather.setLang('en');
-  weather.setCity(cityName);
-
-  //////////////////////////////
-  //      Get Functions       //
-  //////////////////////////////
-
-  // get the Temperature  
-  weather.getTemperature(function(err, temp){
-    console.log(temp);
-  });
-
-  // get the Atm Pressure
-  weather.getPressure(function(err, pres){
-    console.log(pres);
-  });
-
-  // get the Humidity
-  weather.getHumidity(function(err, hum){
-    console.log(hum);
-  });
-
-  // get the Description of the weather condition
-  weather.getDescription(function(err, desc){
-    console.log(desc);
-  });
-}
+WeatherApp.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
 export default WeatherApp;
 
@@ -199,5 +241,21 @@ weather.getHumidity(function(err, hum){
 // get the Description of the weather condition
 weather.getDescription(function(err, desc){
     console.log(desc);
+});
+*/
+
+
+/*
+fetch('http://example.com',{
+    method: "POST",
+    body: JSON.stringify(userData),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+  }).then(response => {
+    response.json().then(data =>{
+      console.log("Successful" + data);
+    })
 });
 */
