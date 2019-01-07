@@ -56,40 +56,42 @@ class WeatherApp extends React.Component {
 
   // Form submission logic
   handleFormSubmit(e) {
-    
-    let userCity = this.state.cityName;
-    
-    //set city
-    weather.setCity(userCity);
-    weather.setLang('en');
-    weather.setUnits('imperial');
-    weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
+    if (!this.state.weatherFetched) {
+      let userCity = this.state.cityName;
+      
+      //set city
+      weather.setCity(userCity);
+      weather.setLang('en');
+      weather.setUnits('imperial');
+      weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
 
-    // get the Temperature  
-    weather.getTemperature(function(err, temp){
-      currentTemperature = temp;
-    });
-    // get the Atm Pressure
-    weather.getPressure(function(err, pres){
-      currentPressure = pres;
-    });
+      // get the Temperature  
+      weather.getTemperature(function(err, temp){
+        currentTemperature = temp;
+      });
+      // get the Atm Pressure
+      weather.getPressure(function(err, pres){
+        currentPressure = pres;
+      });
 
-    // get the Humidity
-    weather.getHumidity(function(err, hum){
-      currentHumidity = hum;
-    });
+      // get the Humidity
+      weather.getHumidity(function(err, hum){
+        currentHumidity = hum;
+      });
 
-    // get the Description of the weather condition
-    weather.getDescription(function(err, desc){
-      currentDescription = desc;
-    });
+      // get the Description of the weather condition
+      weather.getDescription(function(err, desc){
+        currentDescription = desc;
+      });
 
-    this.setState({
-      fetchButtonTxt: 'Weather Fetched for ',
-      fetchButtonClr: 'default',
-      weatherFetched: true,
-      cityNameFetched: this.state.cityName,
-    });
+      this.setState({
+        fetchButtonTxt: 'Weather Fetched for ',
+        fetchButtonClr: 'default',
+        weatherFetched: true,
+        cityNameFetched: this.state.cityName,
+      });
+      console.log("Weather has been fetched.");
+    }
   }
 
   //Handles changes to text input
