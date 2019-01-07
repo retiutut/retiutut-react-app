@@ -1,96 +1,100 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './WeatherApp.css';
 //import Inputs from './InputTest';
 import Input from '@material-ui/core/Input';
 //import material-ui
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
-import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+//import ListItemText from '@material-ui/core/ListItemText';
 
 var currentTemperature = 0.0;
 var currentPressure = 0;
 var currentHumidity = 0;
 var currentDescription = '';
+const weather = require('openweather-apis');
 
 class WeatherApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        cityName: '',
+        cityName: 'New Orleans',
         open: false,
-        currentTemp: 0.0,
-        currentPres: 0,
-        currentHum:0,
-        currentDesc: '',
+        fetchButtonTxt: 'Get Weather for ',
+        fetchButtonClr: 'primary',
+        weatherFetched: false,
+        cityNameFetched: '',
     };
     this.handleChange = this.handleChange.bind(this);
-    this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handFormSubmit = this.handFormSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
     console.log("App Init");
   }
 
   /* This life cycle hook gets executed when the component mounts */
 
-  handleFormSubmit(e) {
+  componentDidMount() {
+    this.setState({
+      currentTemp: 5.0,
+      currentPres: 4,
+      currentHum: 3,
+      currentDesc: "two",
+    });
+  }
+
+  handFormSubmit(e) {
     // Form submission logic
-    e.preventDefault();
+    //e.preventDefault();
     let userCity = this.state.cityName;
     //////////////////////////////
     //      Set Functions       //
     //////////////////////////////
 
-    var weather = require('openweather-apis');
     weather.setLang('en');
     weather.setCity(userCity);
     weather.setUnits('imperial');
     weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
-    var cTemp;
-    var cPres;
-    var cHum;
-    var cDesc = '';
 
     //////////////////////////////
     //      Get Functions       //
     //////////////////////////////
-
     // get the Temperature  
     weather.getTemperature(function(err, temp){
-      console.log("temp: " + temp);
-      cTemp = temp;
       currentTemperature = temp;
     });
-
     // get the Atm Pressure
     weather.getPressure(function(err, pres){
-      console.log("pres: " + pres);
-      cPres = pres;
+      currentPressure = pres;
     });
 
     // get the Humidity
     weather.getHumidity(function(err, hum){
-      console.log("hum: " + hum);
-      cHum = hum;
+      currentHumidity = hum;
     });
 
     // get the Description of the weather condition
     weather.getDescription(function(err, desc){
-      console.log("desc: " + desc);
-      cDesc = desc;
+      currentDescription = desc;
     });
-    console.log("Tried to submit form using: " + userCity);
 
     this.setState({
-      currentTemp: cTemp,
-      currentPres: cPres,
-      currentHum: cHum,
-      currentDesc: cDesc,
-      open: true,
+      fetchButtonTxt: 'Weather Fetched for ',
+      fetchButtonClr: 'default',
+      weatherFetched: true,
+      cityNameFetched: this.state.cityName,
     });
   }
 
@@ -99,6 +103,13 @@ class WeatherApp extends React.Component {
         cityName: e.target.value
     });
     //console.log("Change has happened");
+    if (this.state.weatherFetched) {
+      this.setState({
+        weatherFetched: false,
+        fetchButtonTxt: 'Get Weather for ',
+        fetchButtonClr: 'primary',
+      });
+    };
   }
 
   handleClearForm(e) {
@@ -111,11 +122,25 @@ class WeatherApp extends React.Component {
     });
   }
 
-  handleClose = () => {
+  handleClick = () => {
+    this.setState({
+      open: true,
+    });
+  };
+
+  handleClose(e) {
     this.setState({
       open: false,
     });
   };
+
+  onKeyPress= (e) => {
+    if (e.key === 'Enter') {
+      console.log('Enter key pressed');
+      // write your functionality here
+      this.handFormSubmit();
+    }
+  }
 
   render() {
     var { open } = this.state;
@@ -136,49 +161,60 @@ class WeatherApp extends React.Component {
               alt="reactlogo" 
           />
         </header>
-        <body className="WeatherApp-body">
-          <p>
-            <Typography variant="h4">
-            Enter Location to Get Current Weather
-            </Typography>
-          </p>
-          <p>
-            <Input 
-                type="text"
-                //defaultValue="New Orleans"
-                value={this.state.cityName}
-                onChange={this.handleChange}
-            />
-          </p>
-          <p>
-          <Typography variant="h5" gutterBottom>
-            Getting Weather for {this.state.cityName}
-          </Typography>
-          <Typography variant="subtitle1" gutterBottom>
-            Click to see the Weather!
-          </Typography>
-          <Button variant="contained" color="secondary" onClick={this.handleFormSubmit}>
-            Super Secret Information
-          </Button>
-          </p>
-        </body>
+        <Grid container direction="column" spacing={40} >
+          <Grid item xs={12}>
+            <FormControl>
+              <InputLabel htmlFor="cityNameInput" >
+                City Name
+              </InputLabel>
+              <Input 
+                  id="cityNameInput"
+                  type="text"
+                  value={this.state.cityName}
+                  onChange={this.handleChange}
+                  onKeyDown={this.onKeyPress}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <Fab variant="extended" color={this.state.fetchButtonClr} onClick={this.handFormSubmit}>
+              {this.state.fetchButtonTxt}{this.state.cityName}
+            </Fab>
+          </Grid>
+          <Grid item xs={12}>
+            <Fab variant="extended" color="secondary" onClick={this.handleClick}>
+              Click to View Weather
+            </Fab>
+          </Grid>
+        </Grid>
+        
         <footer className="WeatherApp-footer">
-
-        <Dialog open={open} onClose={this.handleClose}>
-            <DialogTitle>Super Secret Weather</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {currentTemperature}
-                {currentPressure}
-                {currentHumidity}
-                {currentDescription}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button color="primary" onClick={this.handleClose}>
-                OK
-              </Button>
-            </DialogActions>
+          <Dialog open={open} onClose={this.handleClose}>
+                <DialogTitle id="secret-weather">Super Secret Weather</DialogTitle>
+                <DialogContent>
+                    <List>
+                      <ListItem>
+                        City: {this.state.cityNameFetched}
+                      </ListItem>
+                      <ListItem>
+                        Temperature: {currentTemperature} &deg;F
+                      </ListItem>
+                      <ListItem>
+                        Pressure: {currentPressure} hPa
+                      </ListItem>
+                      <ListItem>
+                        Relative Humidity: {currentHumidity}%
+                      </ListItem>
+                      <ListItem>
+                        Condition: {currentDescription}
+                      </ListItem>
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                  <Button color="primary" onClick={this.handleClose}>
+                    OK
+                  </Button>
+                </DialogActions>
           </Dialog>
         </footer>
       </div>
@@ -186,11 +222,7 @@ class WeatherApp extends React.Component {
   }
 }
 
-WeatherApp.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-export default WeatherApp;
+export default (WeatherApp);
 
 
 /*

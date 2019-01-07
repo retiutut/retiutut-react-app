@@ -3,6 +3,7 @@
   background-color: #dfe4f0;
   margin: 0px;
   padding: 0px;
+  height: 100vmin;
 }
 
 .React-logo {
@@ -20,29 +21,18 @@
 }
 
 .WeatherApp-header {
-  min-height: 50vh;
+  min-height: 60%;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  font: arial;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  font: arial;
-}
-
-.WeatherApp-body {
-  min-height: 40vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-  font: arial;
 }
 
 .WeatherApp-footer {
-  min-height: 10vh;
+  min-height: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
