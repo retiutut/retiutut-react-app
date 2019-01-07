@@ -158,7 +158,7 @@ class WeatherApp extends React.Component {
               alt="reactlogo" 
           />
         </header>
-        <Grid container direction="column" spacing={40} >
+        <Grid container direction="column" spacing={32} >
           <Grid item xs={12}>
             <FormControl>
               <InputLabel htmlFor="cityNameInput" >
