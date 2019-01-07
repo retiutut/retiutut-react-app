@@ -37,7 +37,7 @@ class WeatherApp extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handFormSubmit = this.handFormSubmit.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
@@ -55,42 +55,43 @@ class WeatherApp extends React.Component {
   }
 
   // Form submission logic
-  handFormSubmit(e) {
-    
-    e.preventDefault();
-    let userCity = this.state.cityName;
-    
-    //set city
-    weather.setCity(userCity);
-    weather.setLang('en');
-    weather.setUnits('imperial');
-    weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
+  handleFormSubmit(e) {
+    if (!this.state.weatherFetched) {
+      let userCity = this.state.cityName;
+      
+      //set city
+      weather.setCity(userCity);
+      weather.setLang('en');
+      weather.setUnits('imperial');
+      weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
 
-    // get the Temperature  
-    weather.getTemperature(function(err, temp){
-      currentTemperature = temp;
-    });
-    // get the Atm Pressure
-    weather.getPressure(function(err, pres){
-      currentPressure = pres;
-    });
+      // get the Temperature  
+      weather.getTemperature(function(err, temp){
+        currentTemperature = temp;
+      });
+      // get the Atm Pressure
+      weather.getPressure(function(err, pres){
+        currentPressure = pres;
+      });
 
-    // get the Humidity
-    weather.getHumidity(function(err, hum){
-      currentHumidity = hum;
-    });
+      // get the Humidity
+      weather.getHumidity(function(err, hum){
+        currentHumidity = hum;
+      });
 
-    // get the Description of the weather condition
-    weather.getDescription(function(err, desc){
-      currentDescription = desc;
-    });
+      // get the Description of the weather condition
+      weather.getDescription(function(err, desc){
+        currentDescription = desc;
+      });
 
-    this.setState({
-      fetchButtonTxt: 'Weather Fetched for ',
-      fetchButtonClr: 'default',
-      weatherFetched: true,
-      cityNameFetched: this.state.cityName,
-    });
+      this.setState({
+        fetchButtonTxt: 'Weather Fetched for ',
+        fetchButtonClr: 'default',
+        weatherFetched: true,
+        cityNameFetched: this.state.cityName,
+      });
+      console.log("Weather has been fetched.");
+    }
   }
 
   //Handles changes to text input
@@ -135,7 +136,7 @@ class WeatherApp extends React.Component {
     if (e.key === 'Enter') {
       console.log('Enter key pressed');
       // write your functionality here
-      this.handFormSubmit();
+      this.handleFormSubmit();
     }
   }
 
@@ -174,7 +175,7 @@ class WeatherApp extends React.Component {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <Fab variant="extended" color={this.state.fetchButtonClr} onClick={this.handFormSubmit}>
+            <Fab variant="extended" color={this.state.fetchButtonClr} onClick={this.handleFormSubmit}>
               {this.state.fetchButtonTxt}{this.state.cityName}
             </Fab>
           </Grid>
