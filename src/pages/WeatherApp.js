@@ -37,7 +37,7 @@ class WeatherApp extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.handFormSubmit = this.handFormSubmit.bind(this);
+    this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleClearForm = this.handleClearForm.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
@@ -55,9 +55,8 @@ class WeatherApp extends React.Component {
   }
 
   // Form submission logic
-  handFormSubmit(e) {
+  handleFormSubmit(e) {
     
-    e.preventDefault();
     let userCity = this.state.cityName;
     
     //set city
@@ -135,7 +134,7 @@ class WeatherApp extends React.Component {
     if (e.key === 'Enter') {
       console.log('Enter key pressed');
       // write your functionality here
-      this.handFormSubmit();
+      this.handleFormSubmit();
     }
   }
 
@@ -174,7 +173,7 @@ class WeatherApp extends React.Component {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <Fab variant="extended" color={this.state.fetchButtonClr} onClick={this.handFormSubmit}>
+            <Fab variant="extended" color={this.state.fetchButtonClr} onClick={this.handleFormSubmit}>
               {this.state.fetchButtonTxt}{this.state.cityName}
             </Fab>
           </Grid>
