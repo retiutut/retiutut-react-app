@@ -18,11 +18,16 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 //import ListItemText from '@material-ui/core/ListItemText';
 
+const webpack = require('webpack');
+const myEnv = require('dotenv').config();
+
 var currentTemperature = 0.0;
 var currentPressure = 0;
 var currentHumidity = 0;
 var currentDescription = '';
 const weather = require('openweather-apis');
+
+const API_KEY = JSON.stringify(myEnv.parsed.REACT_APP_WEATHER_KEY);
 
 class WeatherApp extends React.Component {
   constructor(props) {
@@ -63,7 +68,8 @@ class WeatherApp extends React.Component {
       weather.setCity(userCity);
       weather.setLang('en');
       weather.setUnits('imperial');
-      weather.setAPPID('7f018bf7be7a15eae90908537e12fc3e');
+      console.log(API_KEY);
+      weather.setAPPID(API_KEY);
 
       // get the Temperature  
       weather.getTemperature(function(err, temp){
