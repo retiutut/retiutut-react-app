@@ -4,16 +4,25 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.8.1",
+    "babel-core": "^6.26.3",
+    "bcrypt": "^3.0.3",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "make-runnable": "^1.3.6",
+    "moment": "^2.23.0",
     "openweather-apis": "^3.3.5",
+    "pg": "^7.7.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-scripts": "2.1.2"
+    "react-scripts": "2.1.2",
+    "uuid": "^3.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel server.js --out-dir build",
+    "eject": "react-scripts eject",
+    "dev-start": "babel-watch server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -27,6 +36,9 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-watch": "^2.0.8",
     "dotenv": "^6.2.0"
   },
   "repository": {
