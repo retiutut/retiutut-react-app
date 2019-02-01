@@ -32,15 +32,15 @@ const Reflection = {
     }
   },
   /**
-   * Get All Reflections
+   * Get All Reflections from All Users
    * @param {object} req 
    * @param {object} res 
    * @returns {object} reflections array
    */
-  async getAll(req, res) {
-    const findAllQuery = 'SELECT * FROM reflections where owner_id = $1';
+  async getAllReflections(req, res) {
+    const findAllQuery = 'SELECT * FROM reflections';
     try {
-      const { rows, rowCount } = await db.query(findAllQuery, [req.user.id]);
+      const { rows, rowCount } = await db.query(findAllQuery);
       return res.status(200).send({ rows, rowCount });
     } catch(error) {
       return res.status(400).send(error);
@@ -52,6 +52,21 @@ const Reflection = {
    * @param {object} res
    * @returns {object} reflection object
    */
+  /**
+   * Get All Reflections from a User
+   * @param {object} req 
+   * @param {object} res 
+   * @returns {object} reflections array
+   */
+  async getUserReflections(req, res) {
+    const findAllQuery = 'SELECT * FROM reflections where owner_id = $1';
+    try {
+      const { rows, rowCount } = await db.query(findAllQuery, [req.user.id]);
+      return res.status(200).send({ rows, rowCount });
+    } catch(error) {
+      return res.status(400).send(error);
+    }
+  },
   async getOne(req, res) {
     const text = 'SELECT * FROM reflections WHERE id = $1 AND owner_id = $2';
     try {

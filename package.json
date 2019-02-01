@@ -18,7 +18,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently -kill-others \"react-scripts start\" \"babel-watch server.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel server.js --out-dir build",
     "eject": "react-scripts eject",

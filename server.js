@@ -18,13 +18,14 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/v1/reflections', Auth.verifyToken, Reflection.create);
-app.get('/api/v1/reflections', Auth.verifyToken, Reflection.getAll);
+app.get('/api/v1/reflections', Auth.verifyToken, Reflection.getAllReflections);
 app.get('/api/v1/reflections/:id', Auth.verifyToken, Reflection.getOne);
+app.get('/api/v1/reflections/:id', Auth.verifyToken, Reflection.getUserReflections);
 app.put('/api/v1/reflections/:id', Auth.verifyToken, Reflection.update);
 app.delete('/api/v1/reflections/:id', Auth.verifyToken, Reflection.delete);
 app.post('/api/v1/users', UserWithDb.create);
 app.post('/api/v1/users/login',UserWithDb.login);
 app.delete('/api/v1/users/me', Auth.verifyToken, UserWithDb.delete);
 
-app.listen(3000)
-console.log('app running on port ', 3000);
+app.listen(3001)
+console.log('app running on port ', 3001);
