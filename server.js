@@ -6,11 +6,13 @@ import ReflectionWithJsObject from './src/usingJSObject/controllers/Reflection';
 import ReflectionWithDB from './src/usingDB/controllers/Reflection';
 import UserWithDb from './src/usingDB/controllers/Users';
 import Auth from './src/usingDB/middleware/Auth';
+var cors = require('cors');
 
 dotenv.config();
 const Reflection = process.env.TYPE === 'db' ? ReflectionWithDB : ReflectionWithJsObject;
 const app = express()
 
+app.use(cors());
 app.use(express.json())
 
 app.get('/', (req, res) => {

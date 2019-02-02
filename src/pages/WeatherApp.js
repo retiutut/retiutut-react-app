@@ -16,6 +16,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import Typography from '@material-ui/core/Typography';
 //import ListItemText from '@material-ui/core/ListItemText';
 
 var currentTemperature = 0.0;
@@ -36,6 +37,8 @@ class WeatherApp extends React.Component {
         fetchButtonClr: 'primary',
         weatherFetched: false,
         cityNameFetched: '',
+        success: '',
+        authToken: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -43,18 +46,90 @@ class WeatherApp extends React.Component {
     this.handleClearForm = this.handleClearForm.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.getReflections = this.getReflections.bind(this);
     console.log("App Init");
   }
 
   /* This life cycle hook gets executed when the component mounts */
   componentDidMount() {
+    var self = this;
     this.setState({
       currentTemp: 5.0,
       currentPres: 4,
       currentHum: 3,
       currentDesc: "two",
+    })
+    /*
+    //basic GET
+    fetch('http://localhost:3001/', { 
+      method: 'GET',
+      data: {
+        email: 'name',
+        password: 'password'
+      }
+    })
+    .then(response => response.json())
+    .then(body => {
+      //console.log(body);
+      messageSQL = body.message;
+      console.log(messageSQL);
+      self.setState({success: messageSQL})
     });
+    */
+    //attempt login
+    fetch('http://localhost:3000/api/v1/users/login/', { 
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({password: "mypassword", email: 'meow2424242424@cats.com'})
+    })
+    .then(response => response.json())
+    .then(body => {
+      //messageSQL = body.message;
+      console.log(body.token);
+      self.setState({authToken: body.token})
+      //return self.getReflections(body.token);
+      return self.getMostRecentReflection(body.token);
+    })
   }
+
+  getReflections = (token) => {
+    fetch('http://localhost:3001/api/v1/reflections/', { 
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          }
+        })
+    .then(response => response.json())
+    .then(body => {
+      console.log(body);
+      //messageSQL = body.message;
+      console.log(body.success);
+      this.setState({success: body.success})
+    })
+  };
+
+  getMostRecentReflection = (token) => {
+    fetch('http://localhost:3001/api/v1/reflections/', { 
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          }
+        })
+    .then(response => response.json())
+    .then(body => {
+      console.log(body);
+      //messageSQL = body.message;
+      console.log(body.success);
+      this.setState({success: body.rows[body.rowCount-1].success})
+    })
+  };
 
   // Form submission logic
   handleFormSubmit(e) {
@@ -99,7 +174,7 @@ class WeatherApp extends React.Component {
   //Handles changes to text input
   handleChange(e) {
     this.setState({
-        cityName: e.target.value
+        cityName: e.target.value,
     });
     //console.log("Change has happened");
     if (this.state.weatherFetched) {
@@ -116,7 +191,8 @@ class WeatherApp extends React.Component {
     e.preventDefault();
     this.setState({ 
       newUserLocation: {
-        cityName: ''
+        cityName: '',
+        success: ''
       },
     });
   }
@@ -124,6 +200,7 @@ class WeatherApp extends React.Component {
   handleClick = () => {
     this.setState({
       open: true,
+      //success: message
     });
   };
 
@@ -216,6 +293,9 @@ class WeatherApp extends React.Component {
                   </Button>
                 </DialogActions>
           </Dialog>
+          <Typography>
+          Recent: "{ this.state.success }"
+          </Typography>
         </footer>
       </div>
     );
