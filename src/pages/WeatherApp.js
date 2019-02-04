@@ -19,13 +19,16 @@ import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 //import ListItemText from '@material-ui/core/ListItemText';
 
-var currentTemperature = 0.0;
-var currentPressure = 0;
-var currentHumidity = 0;
-var currentDescription = '';
+let currentTemperature = 0.0;
+let currentPressure = 0;
+let currentHumidity = 0;
+let currentDescription = '';
 const weather = require('openweather-apis');
 
 const API_KEY = process.env.REACT_APP_WEATHER_KEY;
+const SERVER_URL = (process.env.NODE_ENV === 'development')
+  ? process.env.REACT_APP_SERVER_URL
+  : process.env.REACT_APP_SERVER_URL_WEB;
 
 class WeatherApp extends React.Component {
   constructor(props) {
@@ -47,12 +50,12 @@ class WeatherApp extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.getReflections = this.getReflections.bind(this);
-    console.log("App Init");
+    console.log("App Init. Environment = " + process.env.NODE_ENV);
   }
 
   /* This life cycle hook gets executed when the component mounts */
   componentDidMount() {
-    var self = this;
+    const self = this;
     this.setState({
       currentTemp: 5.0,
       currentPres: 4,
@@ -76,9 +79,11 @@ class WeatherApp extends React.Component {
       self.setState({success: messageSQL})
     });
     */
+    const loginURL = SERVER_URL + '/api/v1/users/login/';
     //attempt login
-    fetch('http://localhost:3000/api/v1/users/login/', { 
+    fetch(loginURL, { 
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -96,7 +101,8 @@ class WeatherApp extends React.Component {
   }
 
   getReflections = (token) => {
-    fetch('http://localhost:3001/api/v1/reflections/', { 
+    const allReflectionsURL = SERVER_URL + '/api/v1/reflections/'
+    fetch(allReflectionsURL, { 
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -114,7 +120,8 @@ class WeatherApp extends React.Component {
   };
 
   getMostRecentReflection = (token) => {
-    fetch('http://localhost:3001/api/v1/reflections/', { 
+    const allReflectionsURL = SERVER_URL + '/api/v1/reflections/'
+    fetch(allReflectionsURL, { 
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -125,8 +132,6 @@ class WeatherApp extends React.Component {
     .then(response => response.json())
     .then(body => {
       console.log(body);
-      //messageSQL = body.message;
-      console.log(body.success);
       this.setState({success: body.rows[body.rowCount-1].success})
     })
   };
@@ -220,7 +225,7 @@ class WeatherApp extends React.Component {
   }
 
   render() {
-    var { open } = this.state;
+    let { open } = this.state;
 
     return (
       <div className="WeatherApp">
