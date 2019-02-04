@@ -18,12 +18,14 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 //import ListItemText from '@material-ui/core/ListItemText';
-
-let currentTemperature = 0.0;
-let currentPressure = 0;
-let currentHumidity = 0;
-let currentDescription = '';
 const weather = require('openweather-apis');
+
+let currentWeather = {
+  temp: 0.0,
+  pres: 0,
+  hum: 0,
+  desc: ''
+}
 
 const API_KEY = process.env.REACT_APP_WEATHER_KEY;
 const SERVER_URL = (process.env.NODE_ENV === 'development')
@@ -50,21 +52,19 @@ class WeatherApp extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.getReflections = this.getReflections.bind(this);
+    this.postLogin = this.postLogin.bind(this);
     console.log("App Init. Environment = " + process.env.NODE_ENV);
   }
 
   /* This life cycle hook gets executed when the component mounts */
   componentDidMount() {
-    const self = this;
-    this.setState({
-      currentTemp: 5.0,
-      currentPres: 4,
-      currentHum: 3,
-      currentDesc: "two",
-    })
-    /*
+    //this.postLogin();
+    this.testDBConnection();
+  }
+
+  testDBConnection() {
     //basic GET
-    fetch('http://localhost:3001/', { 
+    fetch('http://localhost:3342/', { 
       method: 'GET',
       data: {
         email: 'name',
@@ -74,11 +74,13 @@ class WeatherApp extends React.Component {
     .then(response => response.json())
     .then(body => {
       //console.log(body);
-      messageSQL = body.message;
-      console.log(messageSQL);
-      self.setState({success: messageSQL})
+      this.setState({success: body.message})
     });
-    */
+  }
+
+  postLogin() {
+    const self = this;
+    
     const loginURL = SERVER_URL + '/api/v1/users/login/';
     //attempt login
     fetch(loginURL, { 
@@ -149,31 +151,31 @@ class WeatherApp extends React.Component {
 
       // get the Temperature  
       weather.getTemperature(function(err, temp){
-        currentTemperature = temp;
+        currentWeather.temp = temp;
       });
       // get the Atm Pressure
       weather.getPressure(function(err, pres){
-        currentPressure = pres;
+        currentWeather.pres = pres;
       });
 
       // get the Humidity
       weather.getHumidity(function(err, hum){
-        currentHumidity = hum;
+        currentWeather.hum = hum;
       });
 
       // get the Description of the weather condition
       weather.getDescription(function(err, desc){
-        currentDescription = desc;
+        currentWeather.desc = desc;
       });
-
-      this.setState({
-        fetchButtonTxt: 'Weather Fetched for ',
-        fetchButtonClr: 'default',
-        weatherFetched: true,
-        cityNameFetched: this.state.cityName,
-      });
-      console.log("Weather has been fetched.");
     }
+
+    this.setState({
+      fetchButtonTxt: 'Weather Fetched for ',
+      fetchButtonClr: 'default',
+      weatherFetched: true,
+      cityNameFetched: this.state.cityName,
+    });
+      
   }
 
   //Handles changes to text input
@@ -279,16 +281,16 @@ class WeatherApp extends React.Component {
                         City: {this.state.cityNameFetched}
                       </ListItem>
                       <ListItem>
-                        Temperature: {currentTemperature} &deg;F
+                        Temperature: {currentWeather.temp} &deg;F
                       </ListItem>
                       <ListItem>
-                        Pressure: {currentPressure} hPa
+                        Pressure: {currentWeather.pres} hPa
                       </ListItem>
                       <ListItem>
-                        Relative Humidity: {currentHumidity}%
+                        Relative Humidity: {currentWeather.hum}%
                       </ListItem>
                       <ListItem>
-                        Condition: {currentDescription}
+                        Condition: {currentWeather.desc}
                       </ListItem>
                     </List>
                 </DialogContent>

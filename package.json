@@ -21,12 +21,13 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "concurrently -kill-others \"react-scripts start\" \"babel-watch server.js\"",
+    "start": "concurrently \"react-scripts start\" \"babel-watch server.js\"",
     "test": "cross-env NODE_ENV=development concurrently -kill-others \"react-scripts start\" \"babel-watch server.js\"",
     "build": "cross-env NODE_ENV=production react-scripts build && babel server.js --out-dir build",
     "build-server": "babel server.js --out-dir build",
     "eject": "react-scripts eject",
     "start-dev": "babel-watch server.js",
+    "start-react": "react-scripts start",
     "deploy": "npm run build && aws s3 sync build/ s3://retiutut-bucket"
   },
   "eslintConfig": {
@@ -56,6 +57,5 @@
   "bugs": {
     "url": "https://github.com/retiutut/retiutut-react-app/issues"
   },
-  "homepage": "http://retiutut-react-app.richardwaltman.com",
-  "proxy": "http://richardwaltman:3342"
+  "homepage": "http://retiutut-react-app.richardwaltman.com"
 }
