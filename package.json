@@ -20,7 +20,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "concurrently \"react-scripts start\" \"babel-watch server.js\"",
+    "start": "react-scripts start",
     "test": "cross-env NODE_ENV=development concurrently -kill-others \"react-scripts start\" \"babel-watch server.js\"",
     "build": "cross-env NODE_ENV=production react-scripts build && babel server.js --out-dir serverBuild",
     "build-server": "babel server.js --out-dir serverBuild",
@@ -56,5 +56,5 @@
   "bugs": {
     "url": "https://github.com/retiutut/retiutut-react-app/issues"
   },
-  "homepage": "http://retiutut-react-app.richardwaltman.com"
+  "homepage": "http://weather.richardwaltman.com"
 }

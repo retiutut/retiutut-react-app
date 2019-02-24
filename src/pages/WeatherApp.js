@@ -301,7 +301,7 @@ class WeatherApp extends React.Component {
                 </DialogActions>
           </Dialog>
           <Typography>
-          Recent: "{ this.state.success }"
+          Recent Weather: "{ this.state.success }"
           </Typography>
         </footer>
       </div>
